@@ -7,43 +7,47 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Content struct {
+type Contents struct {
 	Username string `json:"Username"`
 	Password string `json:"Password"`
-    Age int `json:"Age"`
+	Email string `json:"Email"`
 }
 
-type Contents []Content
 
+func username(w http.ResponseWriter, r*http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	content := Contents{
+			Username: "scorpion",
+			Password: "testing123",
+			Email: "Manoko@gmail.com",
+		}
+	json.NewEncoder(w).Encode(content)
+}
 
-var contents Contents = Contents{}
-
-func newContent(w http.ResponseWriter, r *http.Request) {
-	var newContent Content 
+func post(w http.ResponseWriter, r *http.Request){
+	var newContent Contents
 	err := json.NewDecoder(r.Body).Decode(&newContent)
-	/* Decode body and request body,
-	checl err if nil create http error and statusBadRequest*/
-	if err != nil {
-		http.Error(w, "invalid request payload", http.StatusBadRequest)
+	if err != nil{
+		http.Error(w, "Invalid request error", http.StatusBadRequest)
+		return
 	}
-	
-	
-	contents = append(contents, newContent)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	response := map[string]interface{}{
 		"message": "Data berhasil ditambahkan",
-		"data":    newContent,
+		"success": "OK",
+		"data": newContent,
 	}
 
 	json.NewEncoder(w).Encode(response)
 }
-func handleRequest() {
+func handleRequest(){
 	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.HandleFunc("/newContent", newContent).Methods("POST")
+	myRouter.HandleFunc("/testing", username).Methods("GET")
+	myRouter.HandleFunc("/post", post).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
-
 func main() {
 	handleRequest()
 }
