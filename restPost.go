@@ -24,6 +24,8 @@ func username(w http.ResponseWriter, r*http.Request){
 	json.NewEncoder(w).Encode(content)
 }
 
+/*
+*/
 func post(w http.ResponseWriter, r *http.Request){
 	var newContent Contents
 	err := json.NewDecoder(r.Body).Decode(&newContent)
@@ -33,7 +35,7 @@ func post(w http.ResponseWriter, r *http.Request){
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusOK) 
 	response := map[string]interface{}{
 		"message": "Data berhasil ditambahkan",
 		"success": "OK",
