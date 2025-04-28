@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"restGolang/model"
 )
@@ -11,5 +10,7 @@ func GetUserStruct(c *gin.Context) {
 		Username: "Mikhael",
 		Password: "Akuanakkaya123",
 	}
-	c.JSON(http.StatusOK, user)
+	c.JSON(200, gin.H{
+		"data": user,
+	})
 }
