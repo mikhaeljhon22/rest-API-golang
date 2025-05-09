@@ -5,7 +5,6 @@ import (
 	"restGolang/repository"
 )
 
-//create interface
 type UserService interface {
 	CreateUser(user *model.Users) error
 	GetAllUsers() ([]model.Users, error)
@@ -14,20 +13,21 @@ type UserService interface {
 	DeleteUser(username string) error
 }
 
-//create dependency injection userService and 
-//inject repo Interface
 type userService struct {
 	repo repository.UserRepository
 }
 
-func NewUserService(repo repository.UserRepository) UserService{
+func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo}
 }
 
-func (s *userService) CreateUser(user *model.Users){
-	return s.repo.Create(user)
+func (s *userService) CreateUser(user *model.Users) error {
+	err := s.repo.Create(user)
+	if err != nil {
+		return err
+	}
+	return nil 
 }
-
 
 func (s *userService) GetAllUsers() ([]model.Users, error) {
 	return s.repo.FindAll()

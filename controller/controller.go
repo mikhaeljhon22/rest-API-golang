@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+//init service file
 var userService service.UserService
 func InitUserController(db *gorm.DB) {
 	// userRepo := repository.NewUserRepository(db)
