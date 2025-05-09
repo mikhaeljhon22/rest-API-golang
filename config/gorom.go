@@ -8,6 +8,7 @@ import (
     "fmt"
 )
 func ConnectToPostgreSQL() (*gorm.DB, error) {
+    //gotdotenv
     err := godotenv.Load()
     if err != nil{
         log.Fatal("error load env variabel")
@@ -19,11 +20,13 @@ func ConnectToPostgreSQL() (*gorm.DB, error) {
     password := os.Getenv("DB_PASSWORD")
     dbname := os.Getenv("DB_NAME")
     
+    //connecting 
     dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host,port,user,password,dbname)
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    
+
+    //if error
     if err != nil {
        panic("failed to connect the database")
     }
-    return db, nil
+    return db,nil
 }
