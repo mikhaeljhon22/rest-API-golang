@@ -11,12 +11,10 @@ import (
 
 //init service file
 var userService service.UserService
-func InitUserController(db *gorm.DB) {
-	// userRepo := repository.NewUserRepository(db)
-	userRepo := repository.NewUserRepository(db)
-	userService = service.NewUserService(userRepo)
+func Init(db *gorm.DB){
+	repo := repository.NewUserRepository(db)
+	userService = service.NewUserService(repo)
 }
-
 func CreatePost(c *gin.Context) {
 	var user model.Users
 	if err := c.BindJSON(&user); err != nil {
@@ -26,8 +24,9 @@ func CreatePost(c *gin.Context) {
 
 	err := userService.CreateUser(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "success to insert data", "data": user})
@@ -86,11 +85,32 @@ func FindUserBy(c *gin.Context) {
 		return
 	}
 
-	user, err := userService.FindUser(username)
+	user, err:= userService.FindUser(username)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		c.JSON(404, gin.H{"message": "user not found"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": user})
+}
+
+func CreateAcc(c *gin.Context){
+	var userNews model.UserNews 
+
+	if err:= c.BindJSON(&userNews); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	result := userService.CreateAcc(&userNews)
+	if result != nil {
+		c.JSON(500,gin.H{
+			"message": result.Error(),
+		})
+	}else{
+	c.JSON(200, gin.H{
+		"message:" : "succcess to create account",
+	})
+}
 }
