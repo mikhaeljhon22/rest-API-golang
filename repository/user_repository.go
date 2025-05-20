@@ -5,6 +5,7 @@ import (
 	"restGolang/model"
 	"restGolang/util"
 	"errors"
+	"fmt"
 )
 
 type UserRepository interface {
@@ -50,13 +51,14 @@ func (r *userRepository) DeleteByUsername(username string) error {
 func (r *userRepository) CreateAcc(userNews *model.UserNews) error{
 	pwHash := util.HashPassword(userNews.Password)
 	userNews.Password = pwHash
-	find := r.db.Where("username = ?", userNews.Username).First(&userNews)
+	find := r.db.Where("username = ? OR email = ?", userNews.Username, userNews.Email).First(&userNews)
 
-	
+	fmt.Println(find.RowsAffected)
+
 	if(find.RowsAffected == 0){
       return r.db.Create(userNews).Error
 	}else{
-		return errors.New(`username already exist`)
+		return errors.New(`username or email already exist`)
 	}
 }
 
@@ -72,3 +74,5 @@ func (r *userRepository) Login(Username string, Password string) (*model.UserNew
 
 	return &user, nil
 }
+
+
