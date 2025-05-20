@@ -14,13 +14,11 @@ import (
 type MockUserRepository struct{
 	mock.Mock
 }
-
 // Implementasi mock untuk Create
-func (m *MockUserRepository) Create(user *model.Users) error {
+func (m *MockUserRepository) Create (user *model.Users) error {
 	args := m.Called(user)
 	return args.Error(0)
 }
-
 // Implementasi metode lain jika diperlukan, tapi kita hanya membutuhkan Create
 func (m *MockUserRepository) FindAll() ([]model.Users, error) {
 	return nil, nil
@@ -62,7 +60,6 @@ func TestCreateUser_Success(t *testing.T) {
 	mockRepo.AssertExpectations(t)
 }
 
-// Test untuk CreateUser jika error
 func TestCreateUser_Error(t *testing.T) {
 	// Membuat mock repository
 	mockRepo := new(MockUserRepository)

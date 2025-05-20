@@ -3,6 +3,9 @@ package service
 import (
 	"restGolang/model"
 	"restGolang/repository"
+	"github.com/golang-jwt/jwt/v5"
+	"time"
+	"fmt"
 )
 
 type UserService interface {
@@ -11,7 +14,9 @@ type UserService interface {
 	FindUser(username string) (*model.Users, error)
 	UpdateUser(id uint, username string) error
 	DeleteUser(username string) error
-	CreateAcc(userNews *model.UserNews) error 
+	CreateAcc(userNews *model.UserNews) error
+	Login(Username string, Password string) (*model.UserNews, error)
+	
 }
 
 type userService struct {
@@ -21,6 +26,46 @@ type userService struct {
 func NewUserService(repo repository.UserRepository) UserService{
 	return &userService{repo}
 }
+
+var secretKey = []byte("secret-key")
+
+func (s *userService) generateJwt(data string) (string, error){
+token := jwt.NewWithClaims(jwt.SigningMethodHS256, 
+        jwt.MapClaims{ 
+        "username": data, 
+        "exp": time.Now().Add(time.Hour * 24).Unix(), 
+        })
+
+    tokenString, err := token.SignedString(secretKey)
+    if err != nil {
+    return "", err
+    }
+
+ return tokenString, nil
+}
+
+func (s *userService) verifyJwt(tokenString string) error {
+token, err := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error) {
+	return secretKey, nil
+})
+if err != nil {
+	return err
+}
+
+if !token.Valid {
+	return fmt.Errorf("invalid token")
+}
+return nil
+}
+
+/*
+if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	username := claims["username"].(string)
+	fmt.Println("Username:", username)
+}
+
+*/
+
 
 func (s *userService) CreateUser(user *model.Users) error{
 	return s.repo.Create(user)
@@ -43,4 +88,8 @@ func (s *userService) DeleteUser(username string) error {
 }
 func (s *userService) CreateAcc(userNews *model.UserNews) error {
 	return s.repo.CreateAcc(userNews)
+}
+
+func (s *userService) Login(Username string, Password string)(*model.UserNews, error){
+	return s.repo.Login(Username,Password)
 }
