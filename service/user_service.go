@@ -16,7 +16,8 @@ type UserService interface {
 	DeleteUser(username string) error
 	CreateAcc(userNews *model.UserNews) error
 	Login(Username string, Password string) (*model.UserNews, error)
-	
+	GenerateJwt(data string) (string, error)
+	VerifyJwt(tokenString string) (string,error)
 }
 
 type userService struct {
@@ -29,7 +30,7 @@ func NewUserService(repo repository.UserRepository) UserService{
 
 var secretKey = []byte("secret-key")
 
-func (s *userService) generateJwt(data string) (string, error){
+func (s *userService) GenerateJwt(data string) (string, error){
 token := jwt.NewWithClaims(jwt.SigningMethodHS256, 
         jwt.MapClaims{ 
         "username": data, 
@@ -44,7 +45,7 @@ token := jwt.NewWithClaims(jwt.SigningMethodHS256,
  return tokenString, nil
 }
 
-func (s *userService) verifyJwt(tokenString string) error {
+func (s *userService) VerifyJwt(tokenString string) error {
 token, err := jwt.Parse(tokenString, func (token *jwt.Token) (interface{}, error) {
 	return secretKey, nil
 })

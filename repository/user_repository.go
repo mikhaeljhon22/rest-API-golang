@@ -56,6 +56,7 @@ func (r *userRepository) CreateAcc(userNews *model.UserNews) error{
 	fmt.Println(find.RowsAffected)
 
 	if(find.RowsAffected == 0){
+		
       return r.db.Create(userNews).Error
 	}else{
 		return errors.New(`username or email already exist`)

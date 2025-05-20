@@ -7,6 +7,7 @@ import (
 	"restGolang/repository"
 	"restGolang/service"
 	"net/http"
+	"fmt"
 )
 
 //init service file
@@ -109,6 +110,16 @@ func CreateAcc(c *gin.Context){
 			"message": result.Error(),
 		})
 	}else{
+		token, err:= userService.GenerateJwt(userNews.Username)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"err": err.Error(),
+			})
+			return 
+		}
+
+		//set header 
+	 c.Header("Authorization", "Bearer " + token)
 	c.JSON(200, gin.H{
 		"message:" : "succcess to create account",
 	})
