@@ -1,10 +1,9 @@
 package repository
 
 import (
-	"crypto/sha256"
 	"gorm.io/gorm"
 	"restGolang/model"
-	"encoding/hex"
+	"restGolang/util"
 	"errors"
 )
 
@@ -15,6 +14,7 @@ type UserRepository interface {
 	UpdateUsername(id uint, username string) error
 	DeleteByUsername(username string) error
 	CreateAcc(user *model.UserNews) error
+	Login(Username string, Password string)(*model.UserNews, error)
 }
 
 type userRepository struct {
@@ -48,17 +48,27 @@ func (r *userRepository) DeleteByUsername(username string) error {
 	return r.db.Where("username = ?", username).Delete(&model.Users{}).Error
 }
 func (r *userRepository) CreateAcc(userNews *model.UserNews) error{
-	pwHash := hashPassword(userNews.Password)
+	pwHash := util.HashPassword(userNews.Password)
 	userNews.Password = pwHash
 	find := r.db.Where("username = ?", userNews.Username).First(&userNews)
 
+	
 	if(find.RowsAffected == 0){
       return r.db.Create(userNews).Error
 	}else{
 		return errors.New(`username already exist`)
 	}
 }
-func hashPassword(password string)string {
-	sum := sha256.Sum256([]byte(password))
-	return hex.EncodeToString(sum[:])
+
+
+func (r *userRepository) Login(Username string, Password string) (*model.UserNews, error) {
+	hashPw := util.HashPassword(Password)
+	var user model.UserNews
+	result := r.db.Where("username = ? AND password = ?", Username, hashPw).First(&user)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
 }

@@ -11,7 +11,8 @@ type UserService interface {
 	FindUser(username string) (*model.Users, error)
 	UpdateUser(id uint, username string) error
 	DeleteUser(username string) error
-	CreateAcc(userNews *model.UserNews) error 
+	CreateAcc(userNews *model.UserNews) error
+	Login(Username string, Password string) (*model.UserNews, error)
 }
 
 type userService struct {
@@ -43,4 +44,8 @@ func (s *userService) DeleteUser(username string) error {
 }
 func (s *userService) CreateAcc(userNews *model.UserNews) error {
 	return s.repo.CreateAcc(userNews)
+}
+
+func (s *userService) Login(Username string, Password string)(*model.UserNews, error){
+	return s.repo.Login(Username,Password)
 }

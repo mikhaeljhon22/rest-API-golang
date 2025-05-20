@@ -114,3 +114,28 @@ func CreateAcc(c *gin.Context){
 	})
 }
 }
+func Login(c *gin.Context){
+	var input struct{
+		Username string `json:"Username"`
+		Password string `json:"Password"`
+	}
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	user, err := userService.Login(input.Username, input.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "success to login",
+		"user": user,
+	})
+}
