@@ -6,6 +6,9 @@ import (
 	"restGolang/config"
 	"restGolang/controller"
 	"restGolang/model"
+	"restGolang/middleware"
+	"restGolang/service"
+	"restGolang/repository"
 )
 
 func main() {
@@ -24,6 +27,10 @@ func main() {
 
 
 	controller.Init(db)
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
+
+	source:= r.Group("/api/local", middleware.AuthGuard(userService))
 
 	r.POST("/testing/post", controller.CreatePost)
 	r.GET("/all/user", controller.AllUser)
@@ -32,7 +39,6 @@ func main() {
 	r.DELETE("/delete", controller.DeleteUser)
 	r.POST("/create/acc", controller.CreateAcc)
 	r.POST("/login", controller.Login)
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Failed to run server:", err)
-	}
+	source.GET("/home", controller.Home)
+	r.Run(":8080"); 
 }
