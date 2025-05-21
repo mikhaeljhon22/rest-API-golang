@@ -119,6 +119,7 @@ func CreateAcc(c *gin.Context){
 		}
 
 		//set header 
+		fmt.Println(token)
 	 c.Header("Authorization", "Bearer " + token)
 	c.JSON(200, gin.H{
 		"message:" : "succcess to create account",
@@ -148,5 +149,11 @@ func Login(c *gin.Context){
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success to login",
 		"user": user,
+	})
+}
+
+func Home(c *gin.Context){
+	c.JSON(200, gin.H{
+		"message": "success to home",
 	})
 }
