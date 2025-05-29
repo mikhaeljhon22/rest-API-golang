@@ -17,7 +17,7 @@ type UserService interface {
 	CreateAcc(userNews *model.UserNews) error
 	Login(Username string, Password string) (*model.UserNews, error)
 	GenerateJwt(data string) (string, error)
-	VerifyJwt(tokenString string) (string,error)
+	VerifyJwt(tokenString string) error
 }
 
 type userService struct {

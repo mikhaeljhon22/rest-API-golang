@@ -8,6 +8,8 @@ import (
 	"restGolang/service"
 	"net/http"
 	"fmt"
+	"path/filepath"
+	"github.com/google/uuid"
 )
 
 //init service file
@@ -155,5 +157,34 @@ func Login(c *gin.Context){
 func Home(c *gin.Context){
 	c.JSON(200, gin.H{
 		"message": "success to home",
+	})
+}
+
+// upload file
+func SaveFileHandler (c *gin.Context){
+	file,err := c.FormFile("file") //create formFile
+
+	if err != nil {
+		c.AbortWithStatusJSON(400, gin.H{
+			"message": "no file received",
+		})
+		return
+	}
+	//create file name
+	extension := filepath.Ext(file.Filename)
+	newFileName := uuid.New().String() + extension 
+
+
+	//save file
+	if err := c.SaveUploadedFile(file, "uploadedFile/" + newFileName); err != nil{
+		c.AbortWithStatusJSON(500, gin.H{
+			"error": "unable to save",
+		})
+		fmt.Println("error")
+
+	}
+
+	c.JSON(200, gin.H{
+		"message": "success upload file",
 	})
 }
