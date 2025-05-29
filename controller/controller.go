@@ -183,6 +183,13 @@ func SaveFileHandler (c *gin.Context){
 	newFileName := uuid.New().String() + extension 
 
 
+	if extension != ".jpg" {
+		c.AbortWithStatusJSON(400, gin.H{
+			"message": "file must be jpg",
+		})
+		return
+	}
+
 	//save file
 	if err := c.SaveUploadedFile(file, "uploadedFile/" + newFileName); err != nil{
 		c.AbortWithStatusJSON(500, gin.H{
