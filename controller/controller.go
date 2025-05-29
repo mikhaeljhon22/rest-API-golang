@@ -148,6 +148,14 @@ func Login(c *gin.Context){
 		return
 	}
 
+	token,err:= userService.GenerateJwt(input.Username)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	c.Header("Authorization","Bearer "+token)
+	fmt.Println(token)
+
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "success to login",
 		"user": user,

@@ -34,7 +34,7 @@ func (s *userService) GenerateJwt(data string) (string, error){
 token := jwt.NewWithClaims(jwt.SigningMethodHS256, 
         jwt.MapClaims{ 
         "username": data, 
-        "exp": time.Now().Add(time.Hour * 24).Unix(), 
+        "exp": time.Now().Add(time.Hour * 24 * 3).Unix(), 
         })
 
     tokenString, err := token.SignedString(secretKey)
@@ -59,13 +59,6 @@ if !token.Valid {
 return nil
 }
 
-/*
-if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-	username := claims["username"].(string)
-	fmt.Println("Username:", username)
-}
-
-*/
 
 
 func (s *userService) CreateUser(user *model.Users) error{
