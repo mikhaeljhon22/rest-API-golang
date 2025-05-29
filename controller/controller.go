@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"github.com/google/uuid"
+	"restGolang/dto"
 )
 
 //init service file
@@ -129,10 +130,7 @@ func CreateAcc(c *gin.Context){
 }
 }
 func Login(c *gin.Context){
-	var input struct{
-		Username string `json:"Username"`
-		Password string `json:"Password"`
-	}
+	var input dto.LoginDTO
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
