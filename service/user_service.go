@@ -80,6 +80,8 @@ func (s *userService) UpdateUser(id uint, username string) error {
 func (s *userService) DeleteUser(username string) error {
 	return s.repo.DeleteByUsername(username)
 }
+
+
 func (s *userService) CreateAcc(userNews *model.UserNews) error {
 	return s.repo.CreateAcc(userNews)
 }

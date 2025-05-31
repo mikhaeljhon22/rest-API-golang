@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"github.com/google/uuid"
 	"restGolang/dto"
+	"restGolang/util"
 )
 
 //init service file
@@ -199,5 +200,30 @@ func SaveFileHandler (c *gin.Context){
 
 	c.JSON(200, gin.H{
 		"message": "success upload file",
+	})
+}
+
+func SendMail(c *gin.Context){
+	name := c.Query("target")
+	result:= util.SendMail(name)
+	if result != nil {
+		c.JSON(500, gin.H{
+		"error": result,
+	})
+	}else{
+	c.JSON(200, gin.H{
+		"message": "success to send",
+	})
+}
+}
+func UUID(c *gin.Context){
+	newUUID,err := uuid.NewRandom()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"error": err,
+		})
+	}
+	c.JSON(200,gin.H{
+		"message": newUUID,
 	})
 }

@@ -53,9 +53,12 @@ func main() {
 	master.DELETE("/delete", controller.DeleteUser)
 	master.POST("/create/acc", controller.CreateAcc)
 	master.POST("/login", controller.Login)
+	master.GET("/email", controller.SendMail)
+
 
 	//uploaded file 
 	master.POST("/upload", controller.SaveFileHandler)
 	source.GET("/home", controller.Home)
-	r.Run(":8080"); 
+	master.GET("/UUID",controller.UUID)
+r.Run(":8080"); 
 }

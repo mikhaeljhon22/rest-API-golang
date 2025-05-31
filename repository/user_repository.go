@@ -5,6 +5,7 @@ import (
 	"restGolang/model"
 	"restGolang/util"
 	"errors"
+	"fmt"
 )
 
 type UserRepository interface {
@@ -64,11 +65,10 @@ func (r *userRepository) Login(Username string, Password string) (*model.UserNew
 	hashPw := util.HashPassword(Password)
 	var user model.UserNews
 	result := r.db.Where("username = ? AND password = ?", Username, hashPw).First(&user)
-
+	
 	if result.Error != nil {
-		return nil, result.Error
+		fmt.Println(result.Error)
 	}
-
 	return &user, nil
 }
 
