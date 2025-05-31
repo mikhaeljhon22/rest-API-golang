@@ -61,5 +61,6 @@ func main() {
 	source.GET("/home", controller.Home)
 	master.GET("/UUID",controller.UUID)
 	master.GET("/random/number",controller.RandomNumb)
+	master.GET("/generate/qr", controller.QRGenerator)
 r.Run(":8080"); 
-}
+}	

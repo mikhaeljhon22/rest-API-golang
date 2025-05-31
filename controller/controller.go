@@ -13,6 +13,7 @@ import (
 	"restGolang/dto"
 	"restGolang/util"
 	 "crypto/rand"
+	 qrcode "github.com/skip2/go-qrcode"
 )
 
 //init service file
@@ -234,4 +235,14 @@ func RandomNumb(c *gin.Context){
 	c.JSON(200,gin.H{
 		"random": p,
 	})
+}
+
+func QRGenerator(c *gin.Context){
+	 var png []byte
+  png, err := qrcode.Encode("https://google.com", qrcode.Medium, 256)
+
+  if err != nil {
+	fmt.Println(err)
+  }
+  c.Writer.Write(png)
 }
