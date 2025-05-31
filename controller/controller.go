@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"restGolang/dto"
 	"restGolang/util"
+	 "crypto/rand"
 )
 
 //init service file
@@ -225,5 +226,12 @@ func UUID(c *gin.Context){
 	}
 	c.JSON(200,gin.H{
 		"message": newUUID,
+	})
+}
+
+func RandomNumb(c *gin.Context){
+    p, _ := rand.Prime(rand.Reader, 15)
+	c.JSON(200,gin.H{
+		"random": p,
 	})
 }

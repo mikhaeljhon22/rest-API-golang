@@ -60,5 +60,6 @@ func main() {
 	master.POST("/upload", controller.SaveFileHandler)
 	source.GET("/home", controller.Home)
 	master.GET("/UUID",controller.UUID)
+	master.GET("/random/number",controller.RandomNumb)
 r.Run(":8080"); 
 }
