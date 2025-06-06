@@ -15,3 +15,4 @@ type UserNews struct {
     CreatedAt time.Time `gorm:"autoCreateTime"`
     UpdatedAT time.Time `gorm:"autoUpdateTime"`
 }
+
