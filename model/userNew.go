@@ -10,7 +10,7 @@ type UserNews struct {
     Password  string    `gorm:"not null"` 
     /*
     AnotherID uint
-    Users Users `gorm:"foreignKey:AnotherID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+    Users Users `gorm:"foreignKey:AnotherID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
     */
     CreatedAt time.Time `gorm:"autoCreateTime"`
     UpdatedAT time.Time `gorm:"autoUpdateTime"`
