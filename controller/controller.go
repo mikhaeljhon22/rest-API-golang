@@ -18,10 +18,11 @@ import (
 
 //init service file
 var userService service.UserService
-func Init(db *gorm.DB){
+func Init(db *gorm.DB, aboutRepo repository.AboutRepository) {
 	repo := repository.NewUserRepository(db)
-	userService = service.NewUserService(repo)
+	userService = service.NewUserService(repo, aboutRepo)
 }
+
 func CreatePost(c *gin.Context) {
 	var user model.Users
 	if err := c.BindJSON(&user); err != nil {
@@ -116,7 +117,7 @@ func CreateAcc(c *gin.Context){
 			"message": result.Error(),
 		})
 	}else{
-		token, err:= userService.GenerateJwt(userNews.Username)
+	token, err:= userService.GenerateJwt(userNews.Username)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"err": err.Error(),
@@ -203,6 +204,27 @@ func SaveFileHandler (c *gin.Context){
 	c.JSON(200, gin.H{
 		"message": "success upload file",
 	})
+}
+func TestMongo(c *gin.Context){
+	var input dto.MongosDTO
+	if err:= c.BindJSON(&input); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	data := model.Mongos{
+		Name:  input.Name,
+		Email: input.Email,
+	}
+	if err := userService.CreateMongo(&data); err != nil {
+		c.JSON(500, gin.H{"error": "failed insert to mongo"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "inserted"})
+
 }
 
 func SendMail(c *gin.Context){

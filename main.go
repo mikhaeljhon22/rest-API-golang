@@ -11,6 +11,7 @@ import (
 	"restGolang/repository"
 	"github.com/gin-contrib/cors"
 	"time"
+	"fmt"
 )
 
 func main() {
@@ -39,9 +40,27 @@ func main() {
 	 db.AutoMigrate(&model.Users{}, &model.UserNews{})
 
 
-	controller.Init(db)
-	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
+
+
+	uri := "mongodb://admin:admin123@localhost:27017/?authSource=admin"
+	client, err := config.ConnectMongo(uri)
+	
+	fmt.Println("connect to client mongo", client)
+	if err != nil {
+		log.Fatal("gagal koneksi db mongo")
+	}
+
+
+	// create database and collection
+	mongoDB := client.Database("belajar")
+	collection := mongoDB.Collection("abouts")
+	
+	// all repo and service
+    userRepository := repository.NewUserRepository(db)
+	aboutRepo := repository.NewAboutRepositoryMongo(collection)
+	userService := service.NewUserService(userRepository, aboutRepo)
+	controller.Init(db,aboutRepo)
+
 
 	master := r.Group("/api/service")
 	source:= r.Group("/api/local", middleware.AuthGuard(userService))
@@ -54,6 +73,7 @@ func main() {
 	master.POST("/create/acc", controller.CreateAcc)
 	master.POST("/login", controller.Login)
 	master.GET("/email", controller.SendMail)
+	master.POST("/testMongo", controller.TestMongo)
 
 
 	//uploaded file 
@@ -62,5 +82,5 @@ func main() {
 	master.GET("/UUID",controller.UUID)
 	master.GET("/random/number",controller.RandomNumb)
 	master.GET("/generate/qr", controller.QRGenerator)
-r.Run(":8080"); 
+r.Run(":8082"); 
 }	
